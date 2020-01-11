@@ -1,9 +1,12 @@
+import { MainView } from "../main-view";
+
 export class GameScene extends Phaser.Scene {
-  preload() {
-    //
+  create() {
+    this._buildMainView();
   }
 
-  create() {}
-
-  update() {}
+  _buildMainView() {
+    const mainView = new MainView(this);
+    this.add.existing(mainView);
+  }
 }
