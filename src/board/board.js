@@ -5,6 +5,7 @@ import { Cell } from "./cell";
 export class Board extends Phaser.GameObjects.Container {
   constructor(scene) {
     super(scene);
+
     this._cells = [];
     this._selectedBall = null;
 
@@ -12,10 +13,28 @@ export class Board extends Phaser.GameObjects.Container {
     this._makeInitialBalls();
   }
 
-  getRandomCell() {
+  getRandomEmptyCell() {
     const rndI = Math.floor(Math.random() * BOARD_DIMENSIONS.width);
     const rndJ = Math.floor(Math.random() * BOARD_DIMENSIONS.height);
-    return this._cells[rndI][rndJ];
+    const rndCell = this._cells[rndI][rndJ];
+
+    if (!rndCell.isEmpty) {
+      return this.getRandomEmptyCell();
+    }
+
+    return rndCell;
+  }
+
+  getCellByBall(ball) {
+    for (let i = 0; i < this._cells.length; i++) {
+      const columns = this._cells[i];
+      for (let j = 0; j < columns.length; j++) {
+        const cell = columns[j];
+        if (cell.ball === ball) {
+          return cell;
+        }
+      }
+    }
   }
 
   _buildBoard() {
@@ -35,10 +54,10 @@ export class Board extends Phaser.GameObjects.Container {
     }
   }
 
-  _makeInitialBalls() {
+  _makeBalls() {
     for (let i = 0; i < 3; i++) {
       const ball = this._generateRandomBall();
-      const cell = this.getRandomCell();
+      const cell = this.getRandomEmptyCell();
 
       cell.addBall(ball);
 
@@ -60,8 +79,9 @@ export class Board extends Phaser.GameObjects.Container {
     const { isEmpty } = cell;
 
     if (isEmpty) {
-      // if (this._selectedBall) {
-      // }
+      if (this._selectedBall) {
+        this._moveBall(cell);
+      }
     } else {
       if (this._selectedBall) {
         this._selectedBall.deselectBall();
@@ -71,5 +91,50 @@ export class Board extends Phaser.GameObjects.Container {
       this._selectedBall.selectBall();
       //cell.selectBall();
     }
+  }
+
+  _moveBall(newCell) {
+    const prevCell = this.getCellByBall(this._selectedBall);
+    prevCell.removeBall();
+    newCell.addBall(this._selectedBall);
+    this._selectedBall.deselectBall();
+    this._selectedBall = null;
+    this._checkForCombination();
+    this._makeBalls();
+    this._checkForCombination();
+  }
+
+  _checkForCombination() {
+    for (let i = 0; i < this._cells.length; i++) {
+      const column = this._cells[i];
+      for (let j = 0; j < column.length; j++) {
+        const cell = column[j];
+        if (!cell.isEmpty) {
+          const combination = this._checkHorizonCombination(
+            cell.ball,
+            i,
+            j,
+            []
+          );
+          console.log(combination);
+        }
+      }
+    }
+  }
+
+  _checkHorizonCombination(ball, col, row, combination) {
+    if (col + 1 >= this._cells.length) {
+      return combination;
+    }
+
+    const cell = this._cells[col + 1][row];
+
+    if (!cell.ball || cell.ball.type !== ball.type) {
+      return combination;
+    }
+
+    combination.push(ball);
+
+    return this._checkHorizonCombination(ball, col, row, combination);
   }
 }

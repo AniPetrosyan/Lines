@@ -4,8 +4,8 @@ export class Cell extends Phaser.GameObjects.Container {
   constructor(scene, row, col) {
     super(scene);
 
-    this._col = col;
     this._row = row;
+    this._col = col;
     this._ball = null;
 
     this._buildBg();
@@ -35,6 +35,7 @@ export class Cell extends Phaser.GameObjects.Container {
 
   removeBall() {
     this.remove(this._ball);
+    this._ball = null;
 
     return this._ball;
   }
