@@ -1,3 +1,4 @@
+import PF from "pathfinding";
 import { BOARD_DIMENSIONS } from "../constants";
 import { Ball } from "./ball";
 import { Cell } from "./cell";
@@ -90,15 +91,44 @@ export class Board extends Phaser.GameObjects.Container {
 
   _moveBall(newCell) {
     const prevCell = this.getCellByBall(this._selectedBall);
+    const { col: x1, row: y1 } = prevCell;
+    const { col: x2, row: y2 } = newCell;
+
+    const path = this._getPath(x1, y1, x2, y2);
+
+    // if (path.length !== 0) {
     prevCell.removeBall();
     newCell.addBall(this._selectedBall);
     this._selectedBall.deselectBall();
     this._selectedBall = null;
     this._checkForCombination();
+
     if (this._combinations.length === 0) {
       this._makeBalls();
       this._checkForCombination();
     }
+    // }
+  }
+
+  _getPath(x1, y1, x2, y2) {
+    const matrix = this._getObstacleMatrix();
+    const finder = new PF.AStarFinder();
+    const board = new PF.Grid(matrix);
+
+    const path = finder.findPath(x1, y1, x2, y2, board);
+    console.warn(path);
+
+    return path;
+  }
+
+  _getObstacleMatrix() {
+    const matrix = [];
+    this._cells.forEach(column => {
+      const col = column.map(cell => +!cell.isEmpty);
+      matrix.push(col);
+    });
+
+    return matrix;
   }
 
   _checkForCombination() {
@@ -122,8 +152,7 @@ export class Board extends Phaser.GameObjects.Container {
       }
     }
 
-    this._collectCombination();
-    //console.warn(this._combinations);
+    this._collectCombinations();
   }
 
   _getHorizontalCombination(ball, col, row, combination) {
@@ -177,7 +206,8 @@ export class Board extends Phaser.GameObjects.Container {
     }
     return false;
   }
-  _collectCombination() {
+
+  _collectCombinations() {
     this._combinations.forEach(combination => {
       combination.forEach(ball => {
         const cell = this.getCellByBall(ball);
