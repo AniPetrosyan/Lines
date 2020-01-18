@@ -7,10 +7,11 @@ export class Board extends Phaser.GameObjects.Container {
     super(scene);
 
     this._cells = [];
+    this._combinations = [];
     this._selectedBall = null;
 
     this._buildBoard();
-    this._makeInitialBalls();
+    this._makeBalls();
   }
 
   getRandomEmptyCell() {
@@ -60,10 +61,6 @@ export class Board extends Phaser.GameObjects.Container {
       const cell = this.getRandomEmptyCell();
 
       cell.addBall(ball);
-
-      /* setTimeout(() => {
-        cell.removeBall();
-      }, 1000 * (i + 1)); */
     }
   }
 
@@ -86,10 +83,8 @@ export class Board extends Phaser.GameObjects.Container {
       if (this._selectedBall) {
         this._selectedBall.deselectBall();
       }
-
       this._selectedBall = cell.ball;
       this._selectedBall.selectBall();
-      //cell.selectBall();
     }
   }
 
@@ -100,41 +95,96 @@ export class Board extends Phaser.GameObjects.Container {
     this._selectedBall.deselectBall();
     this._selectedBall = null;
     this._checkForCombination();
-    this._makeBalls();
-    this._checkForCombination();
+    if (this._combinations.length === 0) {
+      this._makeBalls();
+      this._checkForCombination();
+    }
   }
 
   _checkForCombination() {
+    this._combinations.length = 0;
+
     for (let i = 0; i < this._cells.length; i++) {
       const column = this._cells[i];
       for (let j = 0; j < column.length; j++) {
         const cell = column[j];
         if (!cell.isEmpty) {
-          const combination = this._checkHorizonCombination(
-            cell.ball,
-            i,
-            j,
-            []
-          );
-          console.log(combination);
+          const hComb = this._getHorizontalCombination(cell.ball, i, j, [
+            cell.ball
+          ]);
+          const vComb = this._getVerticalCombination(cell.ball, i, j, [
+            cell.ball
+          ]);
+
+          if (hComb.length >= 5) this._combinations.push(hComb);
+          if (vComb.length >= 5) this._combinations.push(vComb);
         }
       }
     }
+
+    this._collectCombination();
+    //console.warn(this._combinations);
   }
 
-  _checkHorizonCombination(ball, col, row, combination) {
+  _getHorizontalCombination(ball, col, row, combination) {
     if (col + 1 >= this._cells.length) {
       return combination;
     }
 
     const cell = this._cells[col + 1][row];
 
-    if (!cell.ball || cell.ball.type !== ball.type) {
+    if (
+      !cell.ball ||
+      cell.ball.type !== ball.type ||
+      this._alreadyConsistInCombination(ball)
+    ) {
       return combination;
     }
 
-    combination.push(ball);
+    combination.push(cell.ball);
 
-    return this._checkHorizonCombination(ball, col, row, combination);
+    return this._getHorizontalCombination(cell.ball, col + 1, row, combination);
+  }
+
+  _getVerticalCombination(ball, col, row, combination) {
+    if (row + 1 >= this._cells[col].length) {
+      return combination;
+    }
+
+    const cell = this._cells[col][row + 1];
+
+    if (
+      !cell.ball ||
+      cell.ball.type !== ball.type ||
+      this._alreadyConsistInCombination(ball)
+    ) {
+      return combination;
+    }
+
+    combination.push(cell.ball);
+
+    return this._getVerticalCombination(cell.ball, col, row + 1, combination);
+  }
+
+  _alreadyConsistInCombination(ball) {
+    for (let i = 0; i < this._combinations.length; i++) {
+      const combination = this._combinations[i];
+      for (let j = 0; j < combination.length; j++) {
+        if (combination[j].uuid === ball.uuid) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  _collectCombination() {
+    this._combinations.forEach(combination => {
+      combination.forEach(ball => {
+        const cell = this.getCellByBall(ball);
+        setTimeout(() => {
+          cell.removeBall();
+        }, 1000);
+      });
+    });
   }
 }
