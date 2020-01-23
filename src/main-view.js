@@ -1,4 +1,5 @@
 import { Board } from "./board/board";
+import { UI } from "./ui/ui";
 
 export class MainView extends Phaser.GameObjects.Container {
   constructor(scene) {
@@ -17,6 +18,7 @@ export class MainView extends Phaser.GameObjects.Container {
     this.add(board);
   }
   _buildUI() {
-    //...
+    this._ui = new UI(this.scene);
+    this.add(this._ui);
   }
 }

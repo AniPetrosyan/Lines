@@ -1,5 +1,6 @@
 import PF from "pathfinding";
 import { BOARD_DIMENSIONS } from "../constants";
+import { EVENTS } from "../events";
 import { Ball } from "./ball";
 import { Cell } from "./cell";
 
@@ -232,6 +233,8 @@ export class Board extends Phaser.GameObjects.Container {
 
   _collectCombinations() {
     this._combinations.forEach(combination => {
+      const score = combination.length * 10;
+      this.scene.events.emit(EVENTS.COMBINATION_COLLECTED, score);
       combination.forEach(ball => {
         const cell = this.getCellByBall(ball);
         setTimeout(() => {
