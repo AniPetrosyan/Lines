@@ -66,7 +66,7 @@ export class Board extends Phaser.GameObjects.Container {
     const emptyCells = this._getEmptyCells();
 
     for (let i = 0; i < Math.min(3, emptyCells.length); i++) {
-      /* const ball = this._generateRandomBall();
+      /*   const ball = this._generateRandomBall();
       const cell = this.getRandomEmptyCell();
 
       cell.addBall(ball); */
