@@ -14,6 +14,7 @@ export class Board extends Phaser.GameObjects.Container {
 
     this._buildBoard();
     this._makeBalls();
+    this.scene.events.on(EVENTS.BALLS_READY, this._onBallsReady, this);
   }
 
   getRandomEmptyCell() {
@@ -40,6 +41,10 @@ export class Board extends Phaser.GameObjects.Container {
     }
   }
 
+  _onBallsReady(ballsType) {
+    //
+  }
+
   _buildBoard() {
     for (let col = 0; col < BOARD_DIMENSIONS.width; col++) {
       const column = [];
@@ -61,10 +66,10 @@ export class Board extends Phaser.GameObjects.Container {
     const emptyCells = this._getEmptyCells();
 
     for (let i = 0; i < Math.min(3, emptyCells.length); i++) {
-      const ball = this._generateRandomBall();
+      /* const ball = this._generateRandomBall();
       const cell = this.getRandomEmptyCell();
 
-      cell.addBall(ball);
+      cell.addBall(ball); */
     }
   }
 
@@ -109,8 +114,23 @@ export class Board extends Phaser.GameObjects.Container {
       if (this._combinations.length === 0) {
         this._makeBalls();
         this._checkForCombination();
-        this._checkForLose();
       }
+      this._checkForLose();
+    }
+  }
+
+  _getEmptyCells() {
+    const emptyCells = [];
+    this._cells.forEach(col => {
+      emptyCells.push(...col.filter(cell => cell.isEmpty));
+    });
+    return emptyCells;
+  }
+
+  _checkForLose() {
+    const emptyCells = this._getEmptyCells();
+    if (emptyCells.length === 0) {
+      console.log("Game Over");
     }
   }
 
@@ -120,7 +140,7 @@ export class Board extends Phaser.GameObjects.Container {
     const board = new PF.Grid(matrix);
 
     const path = finder.findPath(x1, y1, x2, y2, board);
-    console.warn(path);
+    //console.warn(path);
 
     return path;
   }
@@ -162,21 +182,6 @@ export class Board extends Phaser.GameObjects.Container {
     }
 
     this._collectCombinations();
-  }
-
-  _getEmptyCells() {
-    const emptyCells = [];
-    this._cells.forEach(col => {
-      emptyCells.push(...col.filter(cell => cell.isEmpty));
-    });
-    return emptyCells;
-  }
-
-  _checkForLose() {
-    const emptyCells = this._getEmptyCells();
-    if (emptyCells.length === 0) {
-      console.log("Game Over");
-    }
   }
 
   _getHorizontalCombination(ball, col, row, combination) {

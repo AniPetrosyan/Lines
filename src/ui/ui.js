@@ -1,4 +1,5 @@
 import { EVENTS } from "../events";
+import { NextBallsComponent } from "./next-balls-component";
 import { ScoresComponent } from "./scores-component";
 
 export class UI extends Phaser.GameObjects.Container {
@@ -6,7 +7,7 @@ export class UI extends Phaser.GameObjects.Container {
     super(scene);
     this._build();
     this.scene.events.on(
-      EVENTS.COMBINATIONCOLLECTED,
+      EVENTS.COMBINATION_COLLECTED,
       this._onCombinationCollected,
       this
     );
@@ -23,7 +24,9 @@ export class UI extends Phaser.GameObjects.Container {
   }
 
   _buildNextBallsComponent() {
-    //
+    this._nextBalls = new NextBallsComponent(this.scene);
+    this.add(this._nextBalls);
+    this._nextBalls.setPosition(400, 700);
   }
 
   _buildScoresComponent() {
