@@ -11,6 +11,8 @@ export class Board extends Phaser.GameObjects.Container {
     this._cells = [];
     this._combinations = [];
     this._selectedBall = null;
+    this.LOOP_DIAGONAL_DIR = [-1, 1, 1, -1];
+    this.MAIN_DIAGONAL_DIR = [1, 1, -1, -1];
 
     this._buildBoard();
     this._makeBalls();
@@ -66,10 +68,9 @@ export class Board extends Phaser.GameObjects.Container {
     const emptyCells = this._getEmptyCells();
 
     for (let i = 0; i < Math.min(3, emptyCells.length); i++) {
-      /*   const ball = this._generateRandomBall();
+      const ball = this._generateRandomBall();
       const cell = this.getRandomEmptyCell();
-
-      cell.addBall(ball); */
+      cell.addBall(ball);
     }
   }
 
@@ -136,11 +137,11 @@ export class Board extends Phaser.GameObjects.Container {
 
   _getPath(x1, y1, x2, y2) {
     const matrix = this._getObstacleMatrix();
+
     const finder = new PF.AStarFinder();
     const board = new PF.Grid(matrix);
 
     const path = finder.findPath(x1, y1, x2, y2, board);
-    //console.warn(path);
 
     return path;
   }
@@ -175,13 +176,47 @@ export class Board extends Phaser.GameObjects.Container {
             cell.ball
           ]);
 
+          // const sComb = this._getDiagonalCombination(cell.ball);
+          const sComb = this.findLoopDiagonalLine(cell.ball);
+          const dComb = this.findMainDiagonalLine(cell.ball);
+          //  const sComb = this._getDiagonalCombination(cell.ball, i, j, [
+          //  cell.ball
+          //]);
+
+          //  var horizontal, vertical, fwdDiagonal, bckDiagonal, res;
+          // horizontal = this._getHorizontalCombination(target);
+          //  vertical = this._getVerticalCombination(target);
+          // fwdDiagonal = this._getLineSlash(target);
+          //	bckDiagonal = this.getLineBackslash(target);
+          // res = this.mergeLines(horizontal, vertical);
+          //  res = this.mergeLines(res, fwdDiagonal);
+          // res = this.mergeLines(res, bckDiagonal);
+
           if (hComb.length >= 5) this._combinations.push(hComb);
           if (vComb.length >= 5) this._combinations.push(vComb);
+          if (sComb.length >= 5) this._combinations.push(sComb);
+          if (dComb.length >= 5) this._combinations.push(dComb);
         }
       }
     }
 
     this._collectCombinations();
+  }
+
+  check(i, j, dir) {
+    let result = true;
+    let checkNeighbor =
+      (this._cells.length[i + dir[0]] &&
+        this._cells.length[i][j] ===
+          this._cells.length[i + dir[0]][j + dir[1]]) ||
+      (this._cells.length[i + dir[2]] &&
+        this._cells.length[i][j] ===
+          this._cells.length[i + dir[2]][j + dir[3]]);
+
+    result &= Boolean(this._cells.length[i][j]);
+    result &= checkNeighbor;
+
+    return result;
   }
 
   _getHorizontalCombination(ball, col, row, combination) {
@@ -224,6 +259,192 @@ export class Board extends Phaser.GameObjects.Container {
     return this._getVerticalCombination(cell.ball, col, row + 1, combination);
   }
 
+  /*  _getDiagonalCombination(ball, col, row, combination) {
+    if (row >= 0) {
+      const cell = this._cells[col - 1][row - 1];
+
+      return combination;
+    }
+    if (row >= this._cells[col].length) {
+      return combination;
+    }
+
+    console.log(row, col);
+
+    const cell = this._cells[col + 1][row - 1];
+
+    combination.push(cell.ball);
+
+    return this._getDiagonalCombination(
+      cell.ball,
+      col + 1,
+      row - 1,
+      combination
+    );
+  }
+*/
+  /* _getDiagonalCombination(ball, col, row, combination) {
+    if (col + 1 >= this._cells.length || row - 1 < 0) {
+      return combination;
+    }
+
+    const cell = this._cells[col + 1][row - 1];
+
+    if (
+      !cell.ball ||
+      cell.ball.type !== ball.type ||
+      this._alreadyConsistInCombination(ball)
+    ) {
+      return combination;
+    }
+
+    combination.push(cell.ball);
+
+    return this._getDiagonalCombination(
+      cell.ball,
+      col + 1,
+      row - 1,
+      combination
+    );
+  }
+*/
+  findLoopDiagonalLine() {
+    let i = 0;
+    for (let k = 0; k < this._cells.length; k++) {
+      this.tmpLine = [];
+      this.tmpColor = "";
+      for (let j = 0; j <= k; j++) {
+        i = k - j;
+
+        if (this.check(i, j, this.LOOP_DIAGONAL_DIR)) {
+          if (this.tmpColor !== "" && this.tmpColor !== this._cells[i][j]) {
+            cell.removeBall();
+          }
+          this.tmpLine.push({ i: i, j: j });
+          this.tmpColor = this._cells[i][j];
+        } else {
+          cell.removeBall();
+        }
+
+        cell.removeBall();
+      }
+
+      for (let k = this._cells.length - 2; k >= 0; k--) {
+        this.tmpLine = [];
+        this.tmpColor = "";
+        for (let j = 0; j <= k; j++) {
+          i = k - j;
+
+          if (
+            this.check(
+              this._cells.length - j - 1,
+              this._cells.length - i - 1,
+              this.LOOP_DIAGONAL_DIR
+            )
+          ) {
+            if (
+              this.tmpColor !== "" &&
+              this.tmpColor !==
+                this._cells[this.ballArray.length - j - 1][
+                  this._cells.length - i - 1
+                ]
+            ) {
+              cell.removeBall();
+            }
+            this.tmpLine.push({
+              i: this._cells.length - j - 1,
+              j: this._cells.length - i - 1
+            });
+            this.tmpColor = this._cells[this._cells.length - j - 1][
+              this._cells.length - i - 1
+            ];
+          } else {
+            cell.removeBall();
+          }
+        }
+
+        cell.removeBall();
+      }
+    }
+  }
+  findMainDiagonalLine() {
+    let i = 0;
+    for (let k = this._cells.length - 1; k >= 0; k--) {
+      this.tmpLine = [];
+      this.tmpColor = "";
+      for (let j = k; j <= this._cells.length - 1; j++) {
+        i = j - k;
+
+        if (this.check(i, j, this.MAIN_DIAGONAL_DIR)) {
+          if (this.tmpColor !== "" && this.tmpColor !== this._cells[i][j]) {
+            cell.removeBall();
+          }
+          this.tmpLine.push({ i: i, j: j });
+          this.tmpColor = this._cells[i][j];
+        } else {
+          cell.removeBall();
+        }
+      }
+
+      cell.removeBall();
+    }
+
+    for (let k = 1; k < this._cells.length; k++) {
+      this.tmpLine = [];
+      this.tmpColor = "";
+      for (let j = 0; j <= this._cells.length - 1 - k; j++) {
+        i = k + j;
+
+        if (this.check(i, j, this.MAIN_DIAGONAL_DIR)) {
+          if (this.tmpColor !== "" && this.tmpColor !== this._cells[i][j]) {
+            this.removeBall();
+          }
+          this.tmpLine.push({ i: i, j: j });
+          this.tmpColor = this._cells[i][j];
+        } else {
+          cell.removeBall();
+        }
+      }
+
+      cell.removeBall();
+    }
+  }
+  /* _getLineSlash(ball) {
+    var i,
+      j,
+      first,
+      testBall,
+      res = this.getBall(ball);
+    i = ball.x;
+    j = ball.y;
+    while (i < BOARD_DIMENSIONS.w - 1 && j > 0) {
+      testBall = this.getBall({ x: i + 1, y: j - 1 });
+      if (testBall && testBall.color === first.color) {
+        first = testBall;
+      } else {
+        break;
+      }
+      i += 1;
+      j -= 1;
+    }
+    res = { cnt: 1, fields: [first] };
+    i = first.x - 1;
+    j = first.y + 1;
+    while (
+      this.getBall({ x: i, y: j }) &&
+      this.getBall({ x: i, y: j }).color === first.color
+    ) {
+      res.cnt += 1;
+      res.fields[res.fields.length] = this.getBall({ x: i, y: j });
+      i -= 1;
+      j += 1;
+    }
+    if (res.cnt < this.minLineLength) {
+      res = null;
+    }
+    return res;
+  } */
+
   _alreadyConsistInCombination(ball) {
     for (let i = 0; i < this._combinations.length; i++) {
       const combination = this._combinations[i];
@@ -244,6 +465,8 @@ export class Board extends Phaser.GameObjects.Container {
         const cell = this.getCellByBall(ball);
         setTimeout(() => {
           cell.removeBall();
+          this.add.sprite(ball.x, ball.y, "explosion").play("explosion");
+          console.log("here");
         }, 1000);
       });
     });

@@ -26,7 +26,7 @@ export class UI extends Phaser.GameObjects.Container {
   _buildNextBallsComponent() {
     this._nextBalls = new NextBallsComponent(this.scene);
     this.add(this._nextBalls);
-    this._nextBalls.setPosition(400, 700);
+    this._nextBalls.setPosition(200, 400);
   }
 
   _buildScoresComponent() {

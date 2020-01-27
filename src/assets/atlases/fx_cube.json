@@ -1,0 +1,124 @@
+{"frames": [
+
+{
+	"filename": "cube_parts_white_00.png",
+	"frame": {"x":0,"y":0,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_01.png",
+	"frame": {"x":320,"y":0,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_02.png",
+	"frame": {"x":640,"y":0,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_03.png",
+	"frame": {"x":960,"y":0,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_04.png",
+	"frame": {"x":1280,"y":0,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_05.png",
+	"frame": {"x":0,"y":438,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_06.png",
+	"frame": {"x":320,"y":438,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_07.png",
+	"frame": {"x":640,"y":438,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_08.png",
+	"frame": {"x":960,"y":438,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_09.png",
+	"frame": {"x":1280,"y":438,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_10.png",
+	"frame": {"x":0,"y":876,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_11.png",
+	"frame": {"x":320,"y":876,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_12.png",
+	"frame": {"x":640,"y":876,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+},
+{
+	"filename": "cube_parts_white_13.png",
+	"frame": {"x":960,"y":876,"w":320,"h":438},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":438},
+	"sourceSize": {"w":320,"h":438}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fx_cube.png",
+	"format": "RGBA8888",
+	"size": {"w":1600,"h":1314},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:bc7bfb3404261a71c1436aceebba66ad:a2e1ea813fabfd1d0226a29c40726552:7935cbb5a8087abadc71a45e653b536a$"
+}
+}

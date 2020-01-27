@@ -7,7 +7,7 @@ export class NextBallsComponent extends Phaser.GameObjects.Container {
     super(scene);
     this._cells = [];
     this._build();
-    this._makeBalls;
+    this._makeBalls();
   }
 
   _build() {
